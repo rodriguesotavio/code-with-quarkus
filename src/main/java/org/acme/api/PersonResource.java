@@ -18,7 +18,7 @@ import java.util.Optional;
 public class PersonResource {
 
     @EndpointInject(PersonRoute.SAVE_PERSON_ROUTE)
-    ProducerTemplate personRoute;
+    ProducerTemplate savePersonRoute;
 
     @GET
     public List<Person> all() {
@@ -28,7 +28,7 @@ public class PersonResource {
     @POST
     @Transactional
     public void save(PersonDTO personDTO) {
-        personRoute.sendBody(personDTO);
+        savePersonRoute.sendBody(personDTO);
     }
 
     @PUT
