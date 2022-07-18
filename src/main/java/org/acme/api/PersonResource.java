@@ -2,6 +2,9 @@ package org.acme.api;
 
 import org.acme.domain.Person;
 import org.acme.dto.PersonDTO;
+import org.acme.orch.PersonRoute;
+import org.apache.camel.EndpointInject;
+import org.apache.camel.ProducerTemplate;
 
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
@@ -14,6 +17,9 @@ import java.util.Optional;
 @Consumes(MediaType.APPLICATION_JSON)
 public class PersonResource {
 
+    @EndpointInject(PersonRoute.SAVE_PERSON_ROUTE)
+    ProducerTemplate personRoute;
+
     @GET
     public List<Person> all() {
         return Person.listAll();
@@ -21,12 +27,8 @@ public class PersonResource {
 
     @POST
     @Transactional
-    public Person save(PersonDTO personDTO) {
-        Person person = new Person();
-        person.setName(personDTO.getName());
-        person.setAge(personDTO.getAge());
-        person.persist();
-        return person;
+    public void save(PersonDTO personDTO) {
+        personRoute.sendBody(personDTO);
     }
 
     @PUT
